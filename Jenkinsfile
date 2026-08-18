@@ -1,253 +1,185 @@
-```groovy
 pipeline {
 
     agent any
 
     environment {
-        AWS_REGION = 'us-east-1'
-
-        // Change this to your GitHub repository
-        REPO_URL = 'https://github.com/YOUR-GITHUB-USERNAME/YOUR-REPOSITORY.git'
-
-        // Terraform directory
-        TF_DIR = 'terraform'
-
-        // Ansible directory
-        ANSIBLE_DIR = 'ansible'
+        GITHUB_REPO = 'https://github.com/abiemeralds-ux/my-final-project'
+        EC2_HOST    = '3.236.135.29'
+        EC2_USER    = 'ec2-user'
+        APP_DIR     = '/home/ec2-user/my-final-project'
     }
 
     stages {
 
         stage('Checkout') {
             steps {
-                echo 'Checking out source code...'
+                echo 'Checking out repository...'
 
                 checkout scm
             }
         }
 
-        stage('Verify Project') {
+        stage('Prepare EC2') {
             steps {
-                sh '''
-                    echo "Project structure:"
-                    ls -la
+                echo 'Installing Docker and Docker Compose on EC2...'
 
-                    echo "Portfolio:"
-                    ls -la portfolio
+                sshagent(['aws-ec2-ssh']) {
 
-                    echo "Java application:"
-                    ls -la java-app
-
-                    echo "Terraform:"
-                    ls -la terraform
-
-                    echo "Ansible:"
-                    ls -la ansible
-                '''
-            }
-        }
-
-        stage('Build Java Application') {
-            steps {
-                echo 'Building Java WAR application...'
-
-                sh '''
-                    docker run --rm \
-                      -v "$PWD/java-app:/app" \
-                      -w /app \
-                      maven:3.8.8-eclipse-temurin-8 \
-                      mvn clean package -DskipTests
-                '''
-            }
-        }
-
-        stage('Build Docker Images') {
-            steps {
-                echo 'Building Portfolio Docker image...'
-
-                sh '''
-                    docker build \
-                      -t myportfolio:${BUILD_NUMBER} \
-                      -t myportfolio:latest \
-                      ./portfolio
-                '''
-
-                echo 'Building Java Docker image...'
-
-                sh '''
-                    docker build \
-                      -t java-app:${BUILD_NUMBER} \
-                      -t java-app:latest \
-                      ./java-app
-                '''
-
-                echo 'Docker images:'
-
-                sh '''
-                    docker images | grep -E 'myportfolio|java-app'
-                '''
-            }
-        }
-
-        stage('Test Docker Images') {
-            steps {
-                echo 'Testing Docker images...'
-
-                sh '''
-                    docker run -d \
-                      --name portfolio-test-${BUILD_NUMBER} \
-                      -p 8181:80 \
-                      myportfolio:${BUILD_NUMBER}
-                '''
-
-                sh '''
-                    docker run -d \
-                      --name java-test-${BUILD_NUMBER} \
-                      -p 8180:8080 \
-                      java-app:${BUILD_NUMBER}
-                '''
-
-                sleep 15
-
-                sh '''
-                    curl --fail http://localhost:8181
-                '''
-
-                sh '''
-                    curl --fail http://localhost:8180
-                '''
-            }
-
-            post {
-                always {
                     sh '''
-                        docker rm -f \
-                          portfolio-test-${BUILD_NUMBER} \
-                          java-test-${BUILD_NUMBER} \
-                          2>/dev/null || true
+                        ssh -o StrictHostKeyChecking=no \
+                        ${EC2_USER}@${EC2_HOST} << 'REMOTE_COMMANDS'
+
+                        set -e
+
+                        echo "Updating packages..."
+                        sudo apt-get update
+
+                        echo "Installing required packages..."
+                        sudo apt-get install -y \
+                            ca-certificates \
+                            curl \
+                            git
+
+                        # Install Docker if it is not already installed
+                        if ! command -v docker >/dev/null 2>&1; then
+
+                            echo "Installing Docker..."
+
+                            sudo install -m 0755 -d /etc/apt/keyrings
+
+                            sudo curl -fsSL \
+                                https://download.docker.com/linux/ubuntu/gpg \
+                                -o /etc/apt/keyrings/docker.asc
+
+                            sudo chmod a+r /etc/apt/keyrings/docker.asc
+
+                            echo \
+                              "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
+                              $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
+                              sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+                            sudo apt-get update
+
+                            sudo apt-get install -y \
+                                docker-ce \
+                                docker-ce-cli \
+                                containerd.io \
+                                docker-buildx-plugin \
+                                docker-compose-plugin
+
+                        else
+                            echo "Docker already installed."
+                        fi
+
+                        # Make sure Docker service is running
+                        sudo systemctl enable docker
+                        sudo systemctl start docker
+
+                        # Install Compose plugin if it isn't available
+                        if ! sudo docker compose version >/dev/null 2>&1; then
+
+                            echo "Installing Docker Compose plugin..."
+
+                            sudo apt-get update
+                            sudo apt-get install -y docker-compose-plugin
+
+                        fi
+
+                        echo "Docker version:"
+                        docker --version || sudo docker --version
+
+                        echo "Docker Compose version:"
+                        sudo docker compose version
+
+                        REMOTE_COMMANDS
                     '''
                 }
             }
         }
 
-        stage('Terraform Init') {
+        stage('Deploy Application') {
             steps {
-                echo 'Initializing Terraform...'
+                echo 'Cloning/updating GitHub repository on EC2...'
 
-                dir("${TF_DIR}") {
+                sshagent(['aws-ec2-ssh']) {
+
                     sh '''
-                        terraform init
+                        ssh -o StrictHostKeyChecking=no \
+                        ${EC2_USER}@${EC2_HOST} << EOF
+
+                        set -e
+
+                        # Create application directory
+                        sudo mkdir -p ${APP_DIR}
+
+                        sudo chown -R ${EC2_USER}:${EC2_USER} ${APP_DIR}
+
+                        # Clone repository if it doesn't exist
+                        if [ ! -d "${APP_DIR}/.git" ]; then
+
+                            echo "Cloning repository..."
+
+                            git clone \
+                                ${GITHUB_REPO} \
+                                ${APP_DIR}
+
+                        else
+
+                            echo "Repository already exists. Updating..."
+
+                            cd ${APP_DIR}
+
+                            git fetch origin
+
+                            git reset --hard origin/main
+
+                        fi
+
+                        cd ${APP_DIR}
+
+                        echo "Project contents:"
+                        ls -la
+
+                        echo "Checking Compose file..."
+
+                        if [ ! -f "docker-compose.yaml" ]; then
+                            echo "ERROR: docker-compose.yaml not found!"
+                            exit 1
+                        fi
+
+                        echo "Stopping previous deployment..."
+
+                        sudo docker compose down || true
+
+                        echo "Building and starting applications..."
+
+                        sudo docker compose up -d --build
+
+                        echo "Running containers..."
+
+                        sudo docker compose ps
+
+                        EOF
                     '''
                 }
             }
         }
 
-        stage('Terraform Validate') {
+        stage('Verify Deployment') {
             steps {
-                echo 'Validating Terraform configuration...'
-
-                dir("${TF_DIR}") {
-                    sh '''
-                        terraform validate
-                    '''
-                }
-            }
-        }
-
-        stage('Terraform Plan') {
-            steps {
-                echo 'Creating Terraform plan...'
-
-                dir("${TF_DIR}") {
-                    sh '''
-                        terraform plan \
-                          -out=tfplan
-                    '''
-                }
-            }
-        }
-
-        stage('Terraform Apply') {
-            steps {
-                echo 'Provisioning AWS infrastructure...'
-
-                dir("${TF_DIR}") {
-                    sh '''
-                        terraform apply \
-                          -auto-approve \
-                          tfplan
-                    '''
-                }
-            }
-        }
-
-        stage('Get EC2 IP') {
-            steps {
-                script {
-                    env.EC2_IP = sh(
-                        script: """
-                            cd ${TF_DIR}
-                            terraform output -raw ec2_public_ip
-                        """,
-                        returnStdout: true
-                    ).trim()
-
-                    echo "EC2 Public IP: ${env.EC2_IP}"
-                }
-            }
-        }
-
-        stage('Ansible Configuration') {
-            steps {
-                echo 'Configuring EC2 server with Ansible...'
-
-                dir("${ANSIBLE_DIR}") {
-                    sh '''
-                        ansible-playbook \
-                          -i inventory.ini \
-                          playbook.yml \
-                          --extra-vars "ec2_ip=${EC2_IP}"
-                    '''
-                }
-            }
-        }
-
-        stage('Deploy Containers') {
-            steps {
-                echo 'Deploying Portfolio and Java applications...'
-
-                dir("${ANSIBLE_DIR}") {
-                    sh '''
-                        ansible-playbook \
-                          -i inventory.ini \
-                          deploy.yml \
-                          --extra-vars "ec2_ip=${EC2_IP}"
-                    '''
-                }
-            }
-        }
-
-        stage('Verification') {
-            steps {
-                echo 'Verifying applications...'
+                echo 'Checking Portfolio...'
 
                 sh '''
-                    echo "Testing Portfolio..."
                     curl --fail --max-time 30 \
-                      http://${EC2_IP}/
+                    http://${EC2_HOST}/
                 '''
+
+                echo 'Checking Java application...'
 
                 sh '''
-                    echo "Testing Java application..."
                     curl --fail --max-time 30 \
-                      http://${EC2_IP}:8080/
+                    http://${EC2_HOST}:8080/
                 '''
-
-                echo "======================================"
-                echo "Deployment successful!"
-                echo "Portfolio: http://${EC2_IP}/"
-                echo "Java App:  http://${EC2_IP}:8080/"
-                echo "======================================"
             }
         }
     }
@@ -255,27 +187,31 @@ pipeline {
     post {
 
         success {
-            echo '======================================'
-            echo 'DEVOPS PIPELINE COMPLETED SUCCESSFULLY'
-            echo '======================================'
+            echo '''
+============================================
+DEPLOYMENT SUCCESSFUL
+============================================
+
+Portfolio:
+http://${EC2_HOST}/
+
+Java Application:
+http://${EC2_HOST}:8080/
+
+============================================
+'''
         }
 
         failure {
-            echo '======================================'
-            echo 'DEVOPS PIPELINE FAILED'
-            echo 'Check the stage logs above.'
-            echo '======================================'
-        }
+            echo '''
+============================================
+DEPLOYMENT FAILED
+============================================
 
-        always {
-            echo 'Cleaning Jenkins workspace...'
+Check the Jenkins console output.
 
-            sh '''
-                docker container prune -f || true
-                docker image prune -f || true
-            '''
+============================================
+'''
         }
     }
 }
-```
-
