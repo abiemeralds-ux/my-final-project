@@ -1,0 +1,29 @@
+---
+- name: Configure Web Servers
+  hosts: webservers
+  become: true
+
+  tasks:
+    - name: Install Apache (httpd)
+      yum:
+        name: httpd
+        state: present
+
+    - name: Start and enable Apache
+      service:
+        name: httpd
+        state: started
+        enabled: true
+
+    - name: Deploy a Portfolio Website
+      ansible.builtin.copy:
+        src: index.html
+        dest: /var/www/html/index.html
+        owner: apache
+        group: apache
+        mode: '0644'
+    - name: Restart apache
+      service:
+        name: httpd
+        state: restarted
+

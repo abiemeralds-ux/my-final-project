@@ -1,0 +1,2492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Emmanuel Ogboe | Junior DevOps Engineer</title>
+
+    <meta name="description"
+          content="Emmanuel Ogboe - Junior DevOps Engineer specializing in AWS, Terraform, Docker, Ansible, Linux and CI/CD automation.">
+
+    <meta name="keywords"
+          content="Emmanuel Ogboe, Junior DevOps Engineer, AWS, Terraform, Docker, Ansible, CI/CD, Linux, Cloud Engineer">
+
+    <meta name="author" content="Emmanuel Ogboe">
+
+    <style>
+
+        /* =========================================================
+           GLOBAL
+        ========================================================= */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            scroll-behavior: smooth;
+        }
+
+        :root {
+            --bg: #070b14;
+            --bg-secondary: #0c1220;
+            --card: rgba(16, 24, 40, 0.78);
+            --card-hover: rgba(20, 31, 52, 0.95);
+
+            --primary: #00d9ff;
+            --secondary: #7c3aed;
+            --accent: #22c55e;
+
+            --text: #f8fafc;
+            --muted: #94a3b8;
+
+            --border: rgba(148, 163, 184, 0.15);
+
+            --shadow:
+                0 20px 60px rgba(0, 0, 0, 0.35);
+
+            --container: 1180px;
+        }
+
+        body {
+            font-family:
+                Inter,
+                "Segoe UI",
+                Roboto,
+                Arial,
+                sans-serif;
+
+            background:
+                radial-gradient(
+                    circle at 10% 10%,
+                    rgba(0, 217, 255, 0.08),
+                    transparent 30%
+                ),
+                radial-gradient(
+                    circle at 90% 20%,
+                    rgba(124, 58, 237, 0.10),
+                    transparent 30%
+                ),
+                var(--bg);
+
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        img {
+            max-width: 100%;
+        }
+
+        .container {
+            width: min(92%, var(--container));
+            margin: auto;
+        }
+
+        section {
+            padding: 110px 0;
+            position: relative;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-title span {
+            display: inline-block;
+            color: var(--primary);
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 12px;
+        }
+
+        .section-title h2 {
+            font-size: clamp(2rem, 5vw, 3.2rem);
+            line-height: 1.1;
+            margin-bottom: 15px;
+        }
+
+        .section-title p {
+            color: var(--muted);
+            max-width: 650px;
+            margin: auto;
+        }
+
+
+        /* =========================================================
+           PARTICLES / BACKGROUND
+        ========================================================= */
+
+        .background-grid {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: -2;
+
+            background-image:
+                linear-gradient(
+                    rgba(255,255,255,0.025) 1px,
+                    transparent 1px
+                ),
+                linear-gradient(
+                    90deg,
+                    rgba(255,255,255,0.025) 1px,
+                    transparent 1px
+                );
+
+            background-size: 50px 50px;
+
+            mask-image:
+                linear-gradient(
+                    to bottom,
+                    black,
+                    transparent 90%
+                );
+        }
+
+        .orb {
+            position: absolute;
+            width: 280px;
+            height: 280px;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.18;
+            z-index: -1;
+        }
+
+        .orb.one {
+            background: var(--primary);
+            top: 100px;
+            left: -120px;
+            animation: floatOrb 8s ease-in-out infinite;
+        }
+
+        .orb.two {
+            background: var(--secondary);
+            right: -120px;
+            top: 500px;
+            animation: floatOrb 10s ease-in-out infinite reverse;
+        }
+
+        @keyframes floatOrb {
+            0%, 100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(50px);
+            }
+        }
+
+
+        /* =========================================================
+           NAVIGATION
+        ========================================================= */
+
+        header {
+            position: fixed;
+            width: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+
+            background: rgba(7, 11, 20, 0.72);
+            backdrop-filter: blur(18px);
+            border-bottom: 1px solid var(--border);
+        }
+
+        nav {
+            min-height: 75px;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            font-size: 1.3rem;
+            font-weight: 900;
+            letter-spacing: 1px;
+        }
+
+        .logo span {
+            color: var(--primary);
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--muted);
+            font-size: 0.92rem;
+            transition: 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .menu-btn {
+            display: none;
+
+            border: 1px solid var(--border);
+            background: transparent;
+            color: white;
+
+            width: 42px;
+            height: 42px;
+
+            border-radius: 10px;
+            cursor: pointer;
+
+            font-size: 1.3rem;
+        }
+
+
+        /* =========================================================
+           HERO
+        ========================================================= */
+
+        .hero {
+            min-height: 100vh;
+
+            display: flex;
+            align-items: center;
+
+            padding-top: 120px;
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1.15fr 0.85fr;
+            gap: 70px;
+            align-items: center;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+
+            padding: 8px 15px;
+
+            border: 1px solid rgba(0, 217, 255, 0.25);
+            border-radius: 999px;
+
+            background: rgba(0, 217, 255, 0.05);
+
+            color: var(--primary);
+
+            font-size: 0.82rem;
+            font-weight: 700;
+
+            margin-bottom: 25px;
+
+            animation: fadeUp 0.8s ease both;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+
+            background: var(--accent);
+            border-radius: 50%;
+
+            box-shadow: 0 0 15px var(--accent);
+
+            animation: pulse 1.7s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            50% {
+                transform: scale(1.5);
+                opacity: 0.5;
+            }
+        }
+
+        .hero h1 {
+            font-size: clamp(3rem, 7vw, 6.3rem);
+            line-height: 0.98;
+
+            letter-spacing: -4px;
+
+            margin-bottom: 25px;
+
+            animation: fadeUp 0.8s 0.1s ease both;
+        }
+
+        .gradient-text {
+            background:
+                linear-gradient(
+                    90deg,
+                    var(--primary),
+                    #60a5fa,
+                    var(--secondary)
+                );
+
+            -webkit-background-clip: text;
+            background-clip: text;
+
+            color: transparent;
+        }
+
+        .hero h2 {
+            color: var(--muted);
+            font-size: clamp(1.2rem, 3vw, 1.7rem);
+            margin-bottom: 25px;
+
+            animation: fadeUp 0.8s 0.2s ease both;
+        }
+
+        .hero-description {
+            color: var(--muted);
+            max-width: 650px;
+            font-size: 1.05rem;
+            margin-bottom: 35px;
+
+            animation: fadeUp 0.8s 0.3s ease both;
+        }
+
+        .hero-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+
+            animation: fadeUp 0.8s 0.4s ease both;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+
+            padding: 13px 22px;
+
+            border-radius: 10px;
+
+            font-weight: 700;
+            font-size: 0.9rem;
+
+            transition:
+                transform 0.3s ease,
+                box-shadow 0.3s ease,
+                background 0.3s ease;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: #031018;
+
+            box-shadow:
+                0 10px 30px rgba(0, 217, 255, 0.2);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow:
+                0 15px 40px rgba(0, 217, 255, 0.3);
+        }
+
+        .btn-outline {
+            border: 1px solid var(--border);
+            background: rgba(255,255,255,0.03);
+        }
+
+        .btn-outline:hover {
+            transform: translateY(-3px);
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+
+        /* =========================================================
+           TERMINAL
+        ========================================================= */
+
+        .terminal {
+            background: #05080e;
+
+            border: 1px solid rgba(148,163,184,0.18);
+
+            border-radius: 18px;
+
+            overflow: hidden;
+
+            box-shadow: var(--shadow);
+
+            transform:
+                perspective(1000px)
+                rotateY(-5deg);
+
+            animation:
+                terminalFloat 5s ease-in-out infinite,
+                fadeUp 1s 0.3s ease both;
+        }
+
+        @keyframes terminalFloat {
+            0%, 100% {
+                transform:
+                    perspective(1000px)
+                    rotateY(-5deg)
+                    translateY(0);
+            }
+
+            50% {
+                transform:
+                    perspective(1000px)
+                    rotateY(-5deg)
+                    translateY(-10px);
+            }
+        }
+
+        .terminal-header {
+            height: 42px;
+
+            display: flex;
+            align-items: center;
+
+            gap: 7px;
+
+            padding: 0 15px;
+
+            background: #0b1019;
+
+            border-bottom: 1px solid var(--border);
+        }
+
+        .terminal-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #64748b;
+        }
+
+        .terminal-title {
+            margin-left: 10px;
+            color: var(--muted);
+            font-size: 0.75rem;
+        }
+
+        .terminal-body {
+            padding: 28px;
+
+            font-family:
+                "Courier New",
+                monospace;
+
+            font-size: 0.85rem;
+
+            color: #cbd5e1;
+        }
+
+        .terminal-line {
+            margin-bottom: 12px;
+        }
+
+        .terminal-green {
+            color: #4ade80;
+        }
+
+        .terminal-blue {
+            color: #38bdf8;
+        }
+
+        .terminal-purple {
+            color: #c084fc;
+        }
+
+        .terminal-yellow {
+            color: #facc15;
+        }
+
+
+        /* =========================================================
+           STATS
+        ========================================================= */
+
+        .stats {
+            padding-top: 0;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+
+        .stat {
+            padding: 25px;
+
+            border: 1px solid var(--border);
+            background: var(--card);
+
+            border-radius: 14px;
+
+            text-align: center;
+
+            backdrop-filter: blur(10px);
+        }
+
+        .stat h3 {
+            color: var(--primary);
+            font-size: 2rem;
+        }
+
+        .stat p {
+            color: var(--muted);
+            font-size: 0.85rem;
+        }
+
+
+        /* =========================================================
+           ABOUT
+        ========================================================= */
+
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .about-text p {
+            color: var(--muted);
+            margin-bottom: 20px;
+        }
+
+        .about-card {
+            padding: 35px;
+
+            border: 1px solid var(--border);
+            border-radius: 18px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(0,217,255,0.07),
+                    rgba(124,58,237,0.05)
+                );
+
+            box-shadow: var(--shadow);
+        }
+
+        .about-card h3 {
+            margin-bottom: 20px;
+        }
+
+        .about-list {
+            list-style: none;
+        }
+
+        .about-list li {
+            padding: 13px 0;
+
+            border-bottom: 1px solid var(--border);
+
+            color: var(--muted);
+        }
+
+        .about-list li:last-child {
+            border-bottom: none;
+        }
+
+        .about-list strong {
+            color: var(--text);
+        }
+
+
+        /* =========================================================
+           SKILLS
+        ========================================================= */
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+        }
+
+        .skill-card {
+            padding: 25px;
+
+            border: 1px solid var(--border);
+            background: var(--card);
+
+            border-radius: 15px;
+
+            transition:
+                transform 0.3s ease,
+                border-color 0.3s ease,
+                background 0.3s ease;
+        }
+
+        .skill-card:hover {
+            transform: translateY(-8px);
+
+            border-color:
+                rgba(0,217,255,0.45);
+
+            background: var(--card-hover);
+        }
+
+        .skill-icon {
+            width: 48px;
+            height: 48px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 12px;
+
+            background:
+                rgba(0,217,255,0.08);
+
+            color: var(--primary);
+
+            font-size: 1.3rem;
+
+            margin-bottom: 18px;
+        }
+
+        .skill-card h3 {
+            margin-bottom: 8px;
+        }
+
+        .skill-card p {
+            color: var(--muted);
+            font-size: 0.85rem;
+        }
+
+
+        /* =========================================================
+           TECHNOLOGIES
+        ========================================================= */
+
+        .tech-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .tech {
+            padding: 10px 17px;
+
+            border-radius: 999px;
+
+            background: rgba(255,255,255,0.035);
+
+            border: 1px solid var(--border);
+
+            color: #cbd5e1;
+
+            font-size: 0.85rem;
+            font-weight: 600;
+
+            transition: 0.3s ease;
+        }
+
+        .tech:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+
+            transform: translateY(-3px);
+        }
+
+
+        /* =========================================================
+           PROJECTS
+        ========================================================= */
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+        }
+
+        .project-card {
+            position: relative;
+
+            overflow: hidden;
+
+            border-radius: 18px;
+
+            border: 1px solid var(--border);
+
+            background: var(--card);
+
+            transition:
+                transform 0.35s ease,
+                border-color 0.35s ease;
+
+            backdrop-filter: blur(10px);
+        }
+
+        .project-card:hover {
+            transform: translateY(-10px);
+
+            border-color:
+                rgba(0,217,255,0.35);
+        }
+
+        .project-top {
+            height: 190px;
+
+            padding: 30px;
+
+            display: flex;
+            align-items: flex-end;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(0,217,255,0.14),
+                    rgba(124,58,237,0.15)
+                );
+        }
+
+        .project-number {
+            font-size: 4rem;
+            font-weight: 900;
+
+            color: rgba(255,255,255,0.08);
+        }
+
+        .project-content {
+            padding: 30px;
+        }
+
+        .project-content h3 {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+        }
+
+        .project-content p {
+            color: var(--muted);
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+
+        .project-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+
+            margin-bottom: 25px;
+        }
+
+        .project-tag {
+            padding: 5px 10px;
+
+            border-radius: 6px;
+
+            background: rgba(0,217,255,0.07);
+
+            color: var(--primary);
+
+            font-size: 0.72rem;
+        }
+
+        .project-links {
+            display: flex;
+            gap: 15px;
+        }
+
+        .project-links a {
+            font-size: 0.82rem;
+            color: var(--muted);
+        }
+
+        .project-links a:hover {
+            color: var(--primary);
+        }
+
+
+        /* =========================================================
+           PIPELINE
+        ========================================================= */
+
+        .pipeline {
+            position: relative;
+
+            display: grid;
+            grid-template-columns:
+                repeat(5, 1fr);
+
+            gap: 20px;
+        }
+
+        .pipeline::before {
+            content: "";
+
+            position: absolute;
+
+            top: 38px;
+            left: 10%;
+            right: 10%;
+
+            height: 2px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    var(--primary),
+                    var(--secondary)
+                );
+
+            opacity: 0.35;
+        }
+
+        .pipeline-step {
+            position: relative;
+            z-index: 1;
+
+            text-align: center;
+        }
+
+        .pipeline-icon {
+            width: 76px;
+            height: 76px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            margin: 0 auto 20px;
+
+            border-radius: 50%;
+
+            background: var(--bg-secondary);
+
+            border:
+                2px solid
+                rgba(0,217,255,0.4);
+
+            color: var(--primary);
+
+            font-weight: 900;
+        }
+
+        .pipeline-step h3 {
+            font-size: 0.95rem;
+            margin-bottom: 5px;
+        }
+
+        .pipeline-step p {
+            color: var(--muted);
+            font-size: 0.75rem;
+        }
+
+
+        /* =========================================================
+           SERVICES
+        ========================================================= */
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .service {
+            padding: 30px;
+
+            border: 1px solid var(--border);
+
+            border-radius: 16px;
+
+            background: var(--card);
+
+            transition: 0.3s ease;
+        }
+
+        .service:hover {
+            transform: translateY(-7px);
+            border-color: var(--secondary);
+        }
+
+        .service h3 {
+            margin: 15px 0 8px;
+        }
+
+        .service p {
+            color: var(--muted);
+            font-size: 0.88rem;
+        }
+
+
+        /* =========================================================
+           CONTACT
+        ========================================================= */
+
+        .contact-box {
+            padding: 60px 30px;
+
+            text-align: center;
+
+            border: 1px solid var(--border);
+
+            border-radius: 22px;
+
+            background:
+                radial-gradient(
+                    circle at center,
+                    rgba(0,217,255,0.08),
+                    transparent 60%
+                );
+        }
+
+        .contact-box h2 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            margin-bottom: 15px;
+        }
+
+        .contact-box p {
+            color: var(--muted);
+
+            max-width: 600px;
+
+            margin: 0 auto 30px;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .social {
+            padding: 10px 18px;
+
+            border: 1px solid var(--border);
+
+            border-radius: 8px;
+
+            color: var(--muted);
+
+            transition: 0.3s ease;
+        }
+
+        .social:hover {
+            color: var(--primary);
+            border-color: var(--primary);
+            transform: translateY(-3px);
+        }
+
+
+        /* =========================================================
+           FOOTER
+        ========================================================= */
+
+        footer {
+            padding: 30px 0;
+
+            border-top: 1px solid var(--border);
+
+            text-align: center;
+
+            color: var(--muted);
+
+            font-size: 0.82rem;
+        }
+
+        footer span {
+            color: var(--primary);
+        }
+
+
+        /* =========================================================
+           ANIMATIONS
+        ========================================================= */
+
+        @keyframes fadeUp {
+
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+
+            transition:
+                opacity 0.8s ease,
+                transform 0.8s ease;
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+
+        /* =========================================================
+           RESPONSIVE TABLET
+        ========================================================= */
+
+        @media (max-width: 1000px) {
+
+            .hero-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .terminal {
+                max-width: 700px;
+                margin: auto;
+            }
+
+            .skills-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .pipeline {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .pipeline::before {
+                display: none;
+            }
+
+            .services-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+
+        /* =========================================================
+           RESPONSIVE MOBILE
+        ========================================================= */
+
+        @media (max-width: 700px) {
+
+            section {
+                padding: 80px 0;
+            }
+
+            .nav-links {
+
+                position: absolute;
+
+                top: 75px;
+                left: 0;
+
+                width: 100%;
+
+                flex-direction: column;
+
+                gap: 0;
+
+                background:
+                    rgba(7,11,20,0.97);
+
+                border-bottom:
+                    1px solid var(--border);
+
+                padding: 10px 0;
+
+                transform:
+                    translateY(-150%);
+
+                transition: 0.4s ease;
+            }
+
+            .nav-links.active {
+                transform: translateY(0);
+            }
+
+            .nav-links li {
+                width: 100%;
+            }
+
+            .nav-links a {
+                display: block;
+                padding: 14px 25px;
+            }
+
+            .menu-btn {
+                display: block;
+            }
+
+            .hero {
+                padding-top: 130px;
+            }
+
+            .hero h1 {
+                font-size: clamp(3rem, 15vw, 5rem);
+                letter-spacing: -3px;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .btn {
+                width: 100%;
+            }
+
+            .terminal {
+                transform: none;
+            }
+
+            .terminal-body {
+                padding: 20px;
+                font-size: 0.72rem;
+                overflow-x: auto;
+            }
+
+            .about-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .skills-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .projects-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .pipeline {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+
+            .services-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .section-title {
+                margin-bottom: 40px;
+            }
+        }
+
+
+        @media (max-width: 420px) {
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hero h1 {
+                font-size: 3rem;
+            }
+
+            .about-card,
+            .project-content,
+            .service {
+                padding: 22px;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <div class="background-grid"></div>
+
+    <div class="orb one"></div>
+    <div class="orb two"></div>
+
+
+    <!-- =========================================================
+         NAVIGATION
+    ========================================================== -->
+
+    <header>
+
+        <div class="container">
+
+            <nav>
+
+                <a href="#home" class="logo">
+                    Emmanuel<span>.</span>
+                </a>
+
+                <button
+                    class="menu-btn"
+                    id="menuBtn"
+                    aria-label="Open navigation menu">
+
+                    ☰
+
+                </button>
+
+                <ul class="nav-links" id="navLinks">
+
+                    <li>
+                        <a href="#home">Home</a>
+                    </li>
+
+                    <li>
+                        <a href="#about">About</a>
+                    </li>
+
+                    <li>
+                        <a href="#skills">Skills</a>
+                    </li>
+
+                    <li>
+                        <a href="#projects">Projects</a>
+                    </li>
+
+                    <li>
+                        <a href="#pipeline">CI/CD</a>
+                    </li>
+
+                    <li>
+                        <a href="#contact">Contact</a>
+                    </li>
+
+                </ul>
+
+            </nav>
+
+        </div>
+
+    </header>
+
+
+    <!-- =========================================================
+         HERO
+    ========================================================== -->
+
+    <main>
+
+        <section class="hero" id="home">
+
+            <div class="container">
+
+                <div class="hero-grid">
+
+                    <div>
+
+                        <div class="hero-badge">
+
+                            <span class="status-dot"></span>
+
+                            Available for DevOps Opportunities
+
+                        </div>
+
+                        <h1>
+
+                            Emmanuel
+                            <span class="gradient-text">
+                                Ogboe
+                            </span>
+
+                        </h1>
+
+                        <h2>
+                            Junior DevOps Engineer
+                        </h2>
+
+                        <p class="hero-description">
+
+                            I build, automate and deploy modern cloud
+                            infrastructure using AWS, Terraform, Docker,
+                            Ansible, Linux and CI/CD technologies.
+
+                        </p>
+
+                        <div class="hero-buttons">
+
+                            <a
+                                href="#projects"
+                                class="btn btn-primary">
+
+                                View My Projects →
+
+                            </a>
+
+                            <a
+                                href="#contact"
+                                class="btn btn-outline">
+
+                                Contact Me
+
+                            </a>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- TERMINAL -->
+
+                    <div class="terminal">
+
+                        <div class="terminal-header">
+
+                            <span class="terminal-dot"></span>
+                            <span class="terminal-dot"></span>
+                            <span class="terminal-dot"></span>
+
+                            <span class="terminal-title">
+                                emmanuel@devops-server:~
+                            </span>
+
+                        </div>
+
+                        <div class="terminal-body">
+
+                            <div class="terminal-line">
+
+                                <span class="terminal-green">
+                                    emmanuel@devops
+                                </span>:~$
+
+                                whoami
+
+                            </div>
+
+                            <div class="terminal-line terminal-blue">
+                                Junior DevOps Engineer
+                            </div>
+
+                            <div class="terminal-line">
+
+                                <span class="terminal-green">
+                                    emmanuel@devops
+                                </span>:~$
+
+                                aws configure
+
+                            </div>
+
+                            <div class="terminal-line terminal-purple">
+                                AWS Infrastructure Ready ✓
+                            </div>
+
+                            <div class="terminal-line">
+
+                                <span class="terminal-green">
+                                    emmanuel@devops
+                                </span>:~$
+
+                                terraform apply
+
+                            </div>
+
+                            <div class="terminal-line terminal-yellow">
+                                Infrastructure provisioned ✓
+                            </div>
+
+                            <div class="terminal-line">
+
+                                <span class="terminal-green">
+                                    emmanuel@devops
+                                </span>:~$
+
+                                docker compose up -d
+
+                            </div>
+
+                            <div class="terminal-line terminal-green">
+                                Containers running ✓
+                            </div>
+
+                            <div class="terminal-line">
+
+                                <span class="terminal-green">
+                                    emmanuel@devops
+                                </span>:~$
+
+                                ansible-playbook deploy.yml
+
+                            </div>
+
+                            <div class="terminal-line terminal-blue">
+                                Deployment completed successfully ✓
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             STATS
+        ====================================================== -->
+
+        <section class="stats">
+
+            <div class="container">
+
+                <div class="stats-grid reveal">
+
+                    <div class="stat">
+
+                        <h3>☁</h3>
+
+                        <p>AWS Cloud</p>
+
+                    </div>
+
+                    <div class="stat">
+
+                        <h3>IaC</h3>
+
+                        <p>Terraform</p>
+
+                    </div>
+
+                    <div class="stat">
+
+                        <h3>CI/CD</h3>
+
+                        <p>Automation</p>
+
+                    </div>
+
+                    <div class="stat">
+
+                        <h3>∞</h3>
+
+                        <p>DevOps Mindset</p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             ABOUT
+        ====================================================== -->
+
+        <section id="about">
+
+            <div class="container">
+
+                <div class="section-title reveal">
+
+                    <span>About Me</span>
+
+                    <h2>
+                        Building the bridge between
+                        development and operations.
+                    </h2>
+
+                    <p>
+                        Passionate about automation, cloud infrastructure
+                        and reliable application delivery.
+                    </p>
+
+                </div>
+
+
+                <div class="about-grid">
+
+                    <div class="about-text reveal">
+
+                        <p>
+                            I'm Emmanuel Ogboe, a Junior DevOps Engineer
+                            focused on learning and implementing modern
+                            DevOps practices.
+                        </p>
+
+                        <p>
+                            My interests include cloud infrastructure,
+                            Infrastructure as Code, containerization,
+                            configuration management, CI/CD automation
+                            and Linux administration.
+                        </p>
+
+                        <p>
+                            I enjoy turning manual deployment processes
+                            into repeatable, automated workflows.
+                        </p>
+
+                    </div>
+
+
+                    <div class="about-card reveal">
+
+                        <h3>
+                            DevOps Profile
+                        </h3>
+
+                        <ul class="about-list">
+
+                            <li>
+                                <strong>Role:</strong>
+                                Junior DevOps Engineer
+                            </li>
+
+                            <li>
+                                <strong>Cloud:</strong>
+                                Amazon Web Services
+                            </li>
+
+                            <li>
+                                <strong>IaC:</strong>
+                                Terraform / CloudFormation
+                            </li>
+
+                            <li>
+                                <strong>Automation:</strong>
+                                Ansible
+                            </li>
+
+                            <li>
+                                <strong>Containers:</strong>
+                                Docker / Docker Compose
+                            </li>
+
+                            <li>
+                                <strong>CI/CD:</strong>
+                                GitHub Actions
+                            </li>
+
+                            <li>
+                                <strong>OS:</strong>
+                                Linux / Ubuntu
+                            </li>
+
+                        </ul>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             SKILLS
+        ====================================================== -->
+
+        <section id="skills">
+
+            <div class="container">
+
+                <div class="section-title reveal">
+
+                    <span>Technical Skills</span>
+
+                    <h2>
+                        Tools I use to build and automate
+                    </h2>
+
+                    <p>
+                        A growing DevOps toolkit focused on cloud,
+                        automation and deployment.
+                    </p>
+
+                </div>
+
+
+                <div class="skills-grid">
+
+                    <div class="skill-card reveal">
+
+                        <div class="skill-icon">
+                            ☁
+                        </div>
+
+                        <h3>AWS</h3>
+
+                        <p>
+                            EC2, VPC, IAM, Security Groups,
+                            networking and cloud infrastructure.
+                        </p>
+
+                    </div>
+
+
+                    <div class="skill-card reveal">
+
+                        <div class="skill-icon">
+                            ⚙
+                        </div>
+
+                        <h3>Terraform</h3>
+
+                        <p>
+                            Infrastructure as Code for repeatable
+                            AWS infrastructure provisioning.
+                        </p>
+
+                    </div>
+
+
+                    <div class="skill-card reveal">
+
+                        <div class="skill-icon">
+                            ◈
+                        </div>
+
+                        <h3>Docker</h3>
+
+                        <p>
+                            Containerization, Dockerfiles and
+                            multi-container Docker Compose deployments.
+                        </p>
+
+                    </div>
+
+
+                    <div class="skill-card reveal">
+
+                        <div class="skill-icon">
+                            A
+                        </div>
+
+                        <h3>Ansible</h3>
+
+                        <p>
+                            Automated server configuration,
+                            dependency installation and deployment.
+                        </p>
+
+                    </div>
+
+
+                    <div class="skill-card reveal">
+
+                        <div class="skill-icon">
+                            ⟳
+                        </div>
+
+                        <h3>CI/CD</h3>
+
+                        <p>
+                            Automated build, test and deployment
+                            workflows using GitHub Actions.
+                        </p>
+
+                    </div>
+
+
+                    <div class="skill-card reveal">
+
+                        <div class="skill-icon">
+                            $
+                        </div>
+
+                        <h3>Linux</h3>
+
+                        <p>
+                            Linux administration, SSH, Bash,
+                            services, permissions and troubleshooting.
+                        </p>
+
+                    </div>
+
+
+                    <div class="skill-card reveal">
+
+                        <div class="skill-icon">
+                            &lt;/&gt;
+                        </div>
+
+                        <h3>Git</h3>
+
+                        <p>
+                            Version control, branches, commits,
+                            pull requests and GitHub workflows.
+                        </p>
+
+                    </div>
+
+
+                    <div class="skill-card reveal">
+
+                        <div class="skill-icon">
+                            ☕
+                        </div>
+
+                        <h3>Java</h3>
+
+                        <p>
+                            Java application builds using Maven
+                            and deployment through containers.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             TECHNOLOGIES
+        ====================================================== -->
+
+        <section>
+
+            <div class="container">
+
+                <div class="section-title reveal">
+
+                    <span>Technology Stack</span>
+
+                    <h2>
+                        My DevOps toolbox
+                    </h2>
+
+                </div>
+
+                <div class="tech-container reveal">
+
+                    <span class="tech">AWS</span>
+                    <span class="tech">EC2</span>
+                    <span class="tech">VPC</span>
+                    <span class="tech">IAM</span>
+                    <span class="tech">Terraform</span>
+                    <span class="tech">CloudFormation</span>
+                    <span class="tech">Ansible</span>
+                    <span class="tech">Docker</span>
+                    <span class="tech">Docker Compose</span>
+                    <span class="tech">Nginx</span>
+                    <span class="tech">Git</span>
+                    <span class="tech">GitHub</span>
+                    <span class="tech">GitHub Actions</span>
+                    <span class="tech">Linux</span>
+                    <span class="tech">Ubuntu</span>
+                    <span class="tech">Bash</span>
+                    <span class="tech">Java</span>
+                    <span class="tech">Maven</span>
+                    <span class="tech">HTML</span>
+                    <span class="tech">CSS</span>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             PROJECTS
+        ====================================================== -->
+
+        <section id="projects">
+
+            <div class="container">
+
+                <div class="section-title reveal">
+
+                    <span>Featured Projects</span>
+
+                    <h2>
+                        Projects that demonstrate my skills
+                    </h2>
+
+                    <p>
+                        Practical cloud and DevOps projects built
+                        around automation and deployment.
+                    </p>
+
+                </div>
+
+
+                <div class="projects-grid">
+
+
+                    <!-- PROJECT 1 -->
+
+                    <article class="project-card reveal">
+
+                        <div class="project-top">
+
+                            <div class="project-number">
+                                01
+                            </div>
+
+                        </div>
+
+                        <div class="project-content">
+
+                            <h3>
+                                Modern End-to-End DevOps Deployment
+                            </h3>
+
+                            <p>
+                                A complete deployment platform hosting
+                                a portfolio application and Java application
+                                using AWS, Terraform, Ansible, Docker and
+                                GitHub Actions.
+                            </p>
+
+                            <div class="project-tags">
+
+                                <span class="project-tag">
+                                    AWS
+                                </span>
+
+                                <span class="project-tag">
+                                    Terraform
+                                </span>
+
+                                <span class="project-tag">
+                                    Ansible
+                                </span>
+
+                                <span class="project-tag">
+                                    Docker
+                                </span>
+
+                                <span class="project-tag">
+                                    GitHub Actions
+                                </span>
+
+                                <span class="project-tag">
+                                    Nginx
+                                </span>
+
+                            </div>
+
+                            <div class="project-links">
+
+                                <a href="#" target="_blank">
+                                    GitHub →
+                                </a>
+
+                                <a href="#" target="_blank">
+                                    Live Demo →
+                                </a>
+
+                            </div>
+
+                        </div>
+
+                    </article>
+
+
+                    <!-- PROJECT 2 -->
+
+                    <article class="project-card reveal">
+
+                        <div class="project-top">
+
+                            <div class="project-number">
+                                02
+                            </div>
+
+                        </div>
+
+                        <div class="project-content">
+
+                            <h3>
+                                AWS Infrastructure with Terraform
+                            </h3>
+
+                            <p>
+                                Infrastructure as Code project provisioning
+                                AWS networking resources, security groups,
+                                routing and EC2 infrastructure.
+                            </p>
+
+                            <div class="project-tags">
+
+                                <span class="project-tag">
+                                    Terraform
+                                </span>
+
+                                <span class="project-tag">
+                                    AWS VPC
+                                </span>
+
+                                <span class="project-tag">
+                                    EC2
+                                </span>
+
+                                <span class="project-tag">
+                                    IAM
+                                </span>
+
+                                <span class="project-tag">
+                                    Security Groups
+                                </span>
+
+                            </div>
+
+                            <div class="project-links">
+
+                                <a href="#" target="_blank">
+                                    GitHub →
+                                </a>
+
+                            </div>
+
+                        </div>
+
+                    </article>
+
+
+                    <!-- PROJECT 3 -->
+
+                    <article class="project-card reveal">
+
+                        <div class="project-top">
+
+                            <div class="project-number">
+                                03
+                            </div>
+
+                        </div>
+
+                        <div class="project-content">
+
+                            <h3>
+                                Dockerized Java Application
+                            </h3>
+
+                            <p>
+                                Containerized Java application built with
+                                Maven and deployed using Docker Compose.
+                            </p>
+
+                            <div class="project-tags">
+
+                                <span class="project-tag">
+                                    Java
+                                </span>
+
+                                <span class="project-tag">
+                                    Maven
+                                </span>
+
+                                <span class="project-tag">
+                                    Docker
+                                </span>
+
+                                <span class="project-tag">
+                                    Docker Compose
+                                </span>
+
+                            </div>
+
+                            <div class="project-links">
+
+                                <a href="#" target="_blank">
+                                    GitHub →
+                                </a>
+
+                            </div>
+
+                        </div>
+
+                    </article>
+
+
+                    <!-- PROJECT 4 -->
+
+                    <article class="project-card reveal">
+
+                        <div class="project-top">
+
+                            <div class="project-number">
+                                04
+                            </div>
+
+                        </div>
+
+                        <div class="project-content">
+
+                            <h3>
+                                Automated Server Configuration
+                            </h3>
+
+                            <p>
+                                Ansible automation for configuring Linux
+                                servers, installing dependencies and
+                                deploying applications.
+                            </p>
+
+                            <div class="project-tags">
+
+                                <span class="project-tag">
+                                    Ansible
+                                </span>
+
+                                <span class="project-tag">
+                                    Linux
+                                </span>
+
+                                <span class="project-tag">
+                                    Nginx
+                                </span>
+
+                                <span class="project-tag">
+                                    SSH
+                                </span>
+
+                            </div>
+
+                            <div class="project-links">
+
+                                <a href="#" target="_blank">
+                                    GitHub →
+                                </a>
+
+                            </div>
+
+                        </div>
+
+                    </article>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             CI/CD PIPELINE
+        ====================================================== -->
+
+        <section id="pipeline">
+
+            <div class="container">
+
+                <div class="section-title reveal">
+
+                    <span>CI/CD Pipeline</span>
+
+                    <h2>
+                        From Git push to production
+                    </h2>
+
+                    <p>
+                        Automated application delivery using modern
+                        DevOps practices.
+                    </p>
+
+                </div>
+
+
+                <div class="pipeline">
+
+
+                    <div class="pipeline-step reveal">
+
+                        <div class="pipeline-icon">
+                            01
+                        </div>
+
+                        <h3>Code</h3>
+
+                        <p>
+                            GitHub repository
+                        </p>
+
+                    </div>
+
+
+                    <div class="pipeline-step reveal">
+
+                        <div class="pipeline-icon">
+                            02
+                        </div>
+
+                        <h3>Build</h3>
+
+                        <p>
+                            Maven & Docker
+                        </p>
+
+                    </div>
+
+
+                    <div class="pipeline-step reveal">
+
+                        <div class="pipeline-icon">
+                            03
+                        </div>
+
+                        <h3>Infrastructure</h3>
+
+                        <p>
+                            Terraform
+                        </p>
+
+                    </div>
+
+
+                    <div class="pipeline-step reveal">
+
+                        <div class="pipeline-icon">
+                            04
+                        </div>
+
+                        <h3>Configure</h3>
+
+                        <p>
+                            Ansible
+                        </p>
+
+                    </div>
+
+
+                    <div class="pipeline-step reveal">
+
+                        <div class="pipeline-icon">
+                            05
+                        </div>
+
+                        <h3>Deploy</h3>
+
+                        <p>
+                            AWS EC2
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             SERVICES / FOCUS
+        ====================================================== -->
+
+        <section>
+
+            <div class="container">
+
+                <div class="section-title reveal">
+
+                    <span>What I Focus On</span>
+
+                    <h2>
+                        Automation first.
+                    </h2>
+
+                </div>
+
+
+                <div class="services-grid">
+
+                    <div class="service reveal">
+
+                        <div class="skill-icon">
+                            ☁
+                        </div>
+
+                        <h3>
+                            Cloud Infrastructure
+                        </h3>
+
+                        <p>
+                            Designing and provisioning scalable AWS
+                            infrastructure using Infrastructure as Code.
+                        </p>
+
+                    </div>
+
+
+                    <div class="service reveal">
+
+                        <div class="skill-icon">
+                            ⚙
+                        </div>
+
+                        <h3>
+                            Infrastructure Automation
+                        </h3>
+
+                        <p>
+                            Automating infrastructure and server
+                            configuration with Terraform and Ansible.
+                        </p>
+
+                    </div>
+
+
+                    <div class="service reveal">
+
+                        <div class="skill-icon">
+                            ⇄
+                        </div>
+
+                        <h3>
+                            Continuous Delivery
+                        </h3>
+
+                        <p>
+                            Building automated pipelines that move
+                            applications from source code to deployment.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================================
+             CONTACT
+        ====================================================== -->
+
+        <section id="contact">
+
+            <div class="container">
+
+                <div class="contact-box reveal">
+
+                    <h2>
+                        Let's build something reliable.
+                    </h2>
+
+                    <p>
+                        I'm interested in cloud engineering, DevOps,
+                        infrastructure automation and opportunities
+                        where I can continue developing my skills.
+                    </p>
+
+                    <div class="social-links">
+
+                        <a
+                            class="social"
+                            href="mailto:your-email@gmail.com">
+
+                            Email
+
+                        </a>
+
+                        <a
+                            class="social"
+                            href="#"
+                            target="_blank">
+
+                            GitHub
+
+                        </a>
+
+                        <a
+                            class="social"
+                            href="#"
+                            target="_blank">
+
+                            LinkedIn
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- =========================================================
+         FOOTER
+    ========================================================== -->
+
+    <footer>
+
+        <div class="container">
+
+            © <span id="year"></span>
+            Emmanuel Ogboe.
+
+            Built with HTML, CSS & DevOps passion.
+
+        </div>
+
+    </footer>
+
+
+    <!-- =========================================================
+         JAVASCRIPT
+    ========================================================== -->
+
+    <script>
+
+        /* Mobile navigation */
+
+        const menuBtn =
+            document.getElementById("menuBtn");
+
+        const navLinks =
+            document.getElementById("navLinks");
+
+
+        menuBtn.addEventListener("click", () => {
+
+            navLinks.classList.toggle("active");
+
+            menuBtn.textContent =
+                navLinks.classList.contains("active")
+                ? "✕"
+                : "☰";
+
+        });
+
+
+        /* Close mobile menu after clicking a link */
+
+        document
+            .querySelectorAll(".nav-links a")
+            .forEach(link => {
+
+                link.addEventListener("click", () => {
+
+                    navLinks.classList.remove("active");
+
+                    menuBtn.textContent = "☰";
+
+                });
+
+            });
+
+
+        /* Reveal animations */
+
+        const revealElements =
+            document.querySelectorAll(".reveal");
+
+
+        const revealObserver =
+            new IntersectionObserver(
+                (entries) => {
+
+                    entries.forEach(entry => {
+
+                        if (entry.isIntersecting) {
+
+                            entry.target.classList.add("active");
+
+                            revealObserver.unobserve(
+                                entry.target
+                            );
+
+                        }
+
+                    });
+
+                },
+                {
+                    threshold: 0.12
+                }
+            );
+
+
+        revealElements.forEach(element => {
+
+            revealObserver.observe(element);
+
+        });
+
+
+        /* Dynamic year */
+
+        document.getElementById("year").textContent =
+            new Date().getFullYear();
+
+
+        /* Smooth active navigation */
+
+        const sections =
+            document.querySelectorAll("section[id]");
+
+        const navItems =
+            document.querySelectorAll(".nav-links a");
+
+
+        window.addEventListener("scroll", () => {
+
+            let current = "";
+
+            sections.forEach(section => {
+
+                const sectionTop =
+                    section.offsetTop - 150;
+
+                if (
+                    window.scrollY >= sectionTop
+                ) {
+
+                    current =
+                        section.getAttribute("id");
+
+                }
+
+            });
+
+            navItems.forEach(link => {
+
+                link.style.color = "";
+
+                if (
+                    link.getAttribute("href") ===
+                    "#" + current
+                ) {
+
+                    link.style.color =
+                        "var(--primary)";
+
+                }
+
+            });
+
+        });
+
+    </script>
+
+</body>
+</html>
