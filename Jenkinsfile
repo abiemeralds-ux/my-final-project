@@ -28,7 +28,7 @@ pipeline {
                     ls -la
 
                     echo "Docker Compose file:"
-                    test -f docker-compose.yml
+                    test -f docker-compose.yaml
                 '''
             }
         }
