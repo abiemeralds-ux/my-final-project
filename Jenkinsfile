@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        EC2_HOST = '18.209.221.194'
+        EC2_HOST = '100.58.239.49'
         EC2_USER = 'ec2-user'
         APP_DIR  = '/home/ec2-user/my-final-project'
     }
