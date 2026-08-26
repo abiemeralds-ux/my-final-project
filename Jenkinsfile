@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         EC2_HOST = '18.209.221.194'
-        EC2_USER = 'ec2-user'
+        EC2_USER = 'ec2-server'
         APP_DIR  = '/home/ec2-user/my-final-project'
     }
 
