@@ -4,7 +4,7 @@ pipeline {
 
     environment {
         GITHUB_REPO = 'https://github.com/abiemeralds-ux/my-final-project'
-        EC2_HOST    = '3.236.135.29'
+        EC2_HOST    = '18.209.221.194'
         EC2_USER    = 'ec2-user'
         APP_DIR     = '/home/ec2-user/my-final-project'
     }
@@ -196,7 +196,7 @@ Portfolio:
 http://${EC2_HOST}/
 
 Java Application:
-http://${EC2_HOST}:8080/
+http://${EC2_HOST}:8081/
 
 ============================================
 '''
