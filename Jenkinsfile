@@ -1,12 +1,10 @@
 pipeline {
-
     agent any
 
     environment {
-        GITHUB_REPO = 'https://github.com/abiemeralds-ux/my-final-project'
-        EC2_HOST    = '18.209.221.194'
-        EC2_USER    = 'ec2-user'
-        APP_DIR     = '/home/ec2-user/my-final-project'
+        EC2_HOST = '18.209.221.194'
+        EC2_USER = 'ec2-user'
+        APP_DIR  = '/home/ec2-user/my-final-project'
     }
 
     stages {
@@ -14,152 +12,66 @@ pipeline {
         stage('Checkout') {
             steps {
                 echo 'Checking out repository...'
-
                 checkout scm
             }
         }
 
-        stage('Prepare EC2') {
+        stage('Test Files') {
             steps {
-                echo 'Installing Docker and Docker Compose on EC2...'
+                echo 'Checking project files...'
 
-                sshagent(['aws-ec2-ssh']) {
+                sh '''
+                    echo "Project directory:"
+                    pwd
 
-                    sh '''
-                        ssh -o StrictHostKeyChecking=no \
-                        ${EC2_USER}@${EC2_HOST} << 'REMOTE_COMMANDS'
+                    echo "Project files:"
+                    ls -la
 
-                        set -e
-
-                        echo "Updating packages..."
-                        sudo apt-get update
-
-                        echo "Installing required packages..."
-                        sudo apt-get install -y \
-                            ca-certificates \
-                            curl \
-                            git
-
-                        # Install Docker if it is not already installed
-                        if ! command -v docker >/dev/null 2>&1; then
-
-                            echo "Installing Docker..."
-
-                            sudo install -m 0755 -d /etc/apt/keyrings
-
-                            sudo curl -fsSL \
-                                https://download.docker.com/linux/ubuntu/gpg \
-                                -o /etc/apt/keyrings/docker.asc
-
-                            sudo chmod a+r /etc/apt/keyrings/docker.asc
-
-                            echo \
-                              "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
-                              $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
-                              sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-
-                            sudo apt-get update
-
-                            sudo apt-get install -y \
-                                docker-ce \
-                                docker-ce-cli \
-                                containerd.io \
-                                docker-buildx-plugin \
-                                docker-compose-plugin
-
-                        else
-                            echo "Docker already installed."
-                        fi
-
-                        # Make sure Docker service is running
-                        sudo systemctl enable docker
-                        sudo systemctl start docker
-
-                        # Install Compose plugin if it isn't available
-                        if ! sudo docker compose version >/dev/null 2>&1; then
-
-                            echo "Installing Docker Compose plugin..."
-
-                            sudo apt-get update
-                            sudo apt-get install -y docker-compose-plugin
-
-                        fi
-
-                        echo "Docker version:"
-                        docker --version || sudo docker --version
-
-                        echo "Docker Compose version:"
-                        sudo docker compose version
-
-                        REMOTE_COMMANDS
-                    '''
-                }
+                    echo "Docker Compose file:"
+                    test -f docker-compose.yml
+                '''
             }
         }
 
         stage('Deploy Application') {
             steps {
-                echo 'Cloning/updating GitHub repository on EC2...'
+                echo 'Deploying application to EC2...'
 
-                sshagent(['aws-ec2-ssh']) {
+                withCredentials([
+                    sshUserPrivateKey(
+                        credentialsId: 'aws-ec2-ssh',
+                        keyFileVariable: 'SSH_KEY',
+                        usernameVariable: 'SSH_USERNAME'
+                    )
+                ]) {
 
                     sh '''
-                        ssh -o StrictHostKeyChecking=no \
-                        ${EC2_USER}@${EC2_HOST} << EOF
-
                         set -e
 
-                        # Create application directory
-                        sudo mkdir -p ${APP_DIR}
+                        echo "Creating application directory on EC2..."
 
-                        sudo chown -R ${EC2_USER}:${EC2_USER} ${APP_DIR}
+                        ssh -o StrictHostKeyChecking=no \
+                            -i "$SSH_KEY" \
+                            "$SSH_USERNAME@$EC2_HOST" \
+                            "mkdir -p $APP_DIR"
 
-                        # Clone repository if it doesn't exist
-                        if [ ! -d "${APP_DIR}/.git" ]; then
+                        echo "Copying project to EC2..."
 
-                            echo "Cloning repository..."
+                        scp -o StrictHostKeyChecking=no \
+                            -i "$SSH_KEY" \
+                            -r ./* \
+                            "$SSH_USERNAME@$EC2_HOST:$APP_DIR/"
 
-                            git clone \
-                                ${GITHUB_REPO} \
-                                ${APP_DIR}
+                        echo "Deploying containers..."
 
-                        else
-
-                            echo "Repository already exists. Updating..."
-
-                            cd ${APP_DIR}
-
-                            git fetch origin
-
-                            git reset --hard origin/main
-
-                        fi
-
-                        cd ${APP_DIR}
-
-                        echo "Project contents:"
-                        ls -la
-
-                        echo "Checking Compose file..."
-
-                        if [ ! -f "docker-compose.yaml" ]; then
-                            echo "ERROR: docker-compose.yaml not found!"
-                            exit 1
-                        fi
-
-                        echo "Stopping previous deployment..."
-
-                        sudo docker compose down || true
-
-                        echo "Building and starting applications..."
-
-                        sudo docker compose up -d --build
-
-                        echo "Running containers..."
-
-                        sudo docker compose ps
-
-                        EOF
+                        ssh -o StrictHostKeyChecking=no \
+                            -i "$SSH_KEY" \
+                            "$SSH_USERNAME@$EC2_HOST" \
+                            "
+                                cd $APP_DIR &&
+                                docker compose down || true &&
+                                docker compose up -d --build
+                            "
                     '''
                 }
             }
@@ -167,37 +79,42 @@ pipeline {
 
         stage('Verify Deployment') {
             steps {
-                echo 'Checking Portfolio...'
+                echo 'Checking deployed containers...'
 
-                sh '''
-                    curl --fail --max-time 30 \
-                    http://${EC2_HOST}/
-                '''
+                withCredentials([
+                    sshUserPrivateKey(
+                        credentialsId: 'aws-ec2-ssh',
+                        keyFileVariable: 'SSH_KEY',
+                        usernameVariable: 'SSH_USERNAME'
+                    )
+                ]) {
 
-                echo 'Checking Java application...'
+                    sh '''
+                        ssh -o StrictHostKeyChecking=no \
+                            -i "$SSH_KEY" \
+                            "$SSH_USERNAME@$EC2_HOST" \
+                            "
+                                echo 'Running containers:'
+                                docker ps
 
-                sh '''
-                    curl --fail --max-time 30 \
-                    http://${EC2_HOST}:8080/
-                '''
+                                echo ''
+                                echo 'Docker Compose status:'
+                                cd $APP_DIR
+                                docker compose ps
+                            "
+                    '''
+                }
             }
         }
     }
 
     post {
-
         success {
             echo '''
 ============================================
 DEPLOYMENT SUCCESSFUL
 ============================================
-
-Portfolio:
-http://${EC2_HOST}/
-
-Java Application:
-http://${EC2_HOST}:8081/
-
+Application has been deployed to EC2.
 ============================================
 '''
         }
@@ -207,9 +124,7 @@ http://${EC2_HOST}:8081/
 ============================================
 DEPLOYMENT FAILED
 ============================================
-
 Check the Jenkins console output.
-
 ============================================
 '''
         }
